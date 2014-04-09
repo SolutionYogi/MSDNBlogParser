@@ -1,0 +1,56 @@
+# Personal files
+*.user
+ 
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+ClientBin/
+*.obj
+.builds
+Installer/Output/*.exe
+ 
+# ReSharper
+_ReSharper.*
+*.resharper
+ 
+# Visual Studio, SourceSafe, TFS, and VS extensions
+*.suo
+*.[Cc]ache
+*.vscc 
+*.vsmdi
+*.vspcc
+*.vssscc
+*.scc
+*.publish.xml
+*.Publish.xml
+*.vs10x
+publish/
+*.dbmdl
+TestResults/
+*.testsettings
+*.docstates
+*.docstates
+*.pubxml
+publishprofiles/
+ 
+# Mac droppings
+*.DS_Store
+ 
+# Vim
+*~
+*.swp
+ 
+# Other
+~$*
+*.orig
+ 
+#JetBrains IDE
+.idea
+
+*.log
+
+#Final Builder temporary files
+*.fb7lck
+*.fbl7
