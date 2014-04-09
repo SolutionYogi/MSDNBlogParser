@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -45,9 +46,23 @@ namespace MSDNBlogParser
 
             var mainCommentsNode = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'blog-feedback-list')]");
 
+            result.Comments.AddRange(ParseComments(mainCommentsNode));
+
             Console.WriteLine(mainCommentsNode.InnerHtml);
 
             return result;
+        }
+
+        private static IEnumerable<Comment> ParseComments(HtmlNode mainCommentsNode)
+        {
+            var unorderedListNode = mainCommentsNode.SelectSingleNode(".//ul[@class='content-list']");
+            var listItemNodes = unorderedListNode.SelectNodes("li");
+            return listItemNodes.Select(listItemNode => new Comment
+                                                        {
+                                                            Author = listItemNode.SelectSingleNode(".//div[@class='post-author']/*/span[@class='user-name']").InnerText,
+                                                            Date = DateTime.Parse(listItemNode.SelectSingleNode(".//div[@class='post-date']/span").InnerText),
+                                                            Contents = listItemNode.SelectSingleNode(".//div[contains(@class, 'post-content')]").InnerText
+                                                        });
         }
 
         private static string GetPageContents(string url)
