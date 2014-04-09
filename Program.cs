@@ -44,17 +44,36 @@ namespace MSDNBlogParser
                 result.Tags.Add(tagLink.InnerText);
             }
 
-            var mainCommentsNode = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'blog-feedback-list')]");
+            //Comments on the main page.
+            result.Comments.AddRange(ParseComments(document));
 
-            result.Comments.AddRange(ParseComments(mainCommentsNode));
+            var pagerNode = document.DocumentNode.SelectSingleNode("//div[@class='pager']");
 
-            Console.WriteLine(mainCommentsNode.InnerHtml);
+            var links = pagerNode.SelectNodes(".//a");
+
+            foreach(var link in links)
+            {
+                const string baseUrl = "http://blogs.msdn.com";
+                var fullUrl = baseUrl + link.Attributes["href"].Value;
+                Console.WriteLine("Parsing comment page {0}", fullUrl);
+                var pageDocument = GetHtmlDocument(fullUrl);
+                result.Comments.AddRange(ParseComments(pageDocument));
+            }
 
             return result;
         }
 
-        private static IEnumerable<Comment> ParseComments(HtmlNode mainCommentsNode)
+        private static HtmlDocument GetHtmlDocument(string fullUrl)
         {
+            var filePath = GetPageContents(fullUrl);
+            var document = new HtmlDocument();
+            document.Load(filePath);
+            return document;
+        }
+
+        private static IEnumerable<Comment> ParseComments(HtmlDocument document)
+        {
+            var mainCommentsNode = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'blog-feedback-list')]");
             var unorderedListNode = mainCommentsNode.SelectSingleNode(".//ul[@class='content-list']");
             var listItemNodes = unorderedListNode.SelectNodes("li");
             return listItemNodes.Select(listItemNode => new Comment
