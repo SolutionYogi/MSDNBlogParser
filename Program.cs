@@ -34,6 +34,19 @@ namespace MSDNBlogParser
             result.Title = fullPostNode.SelectSingleNode("h3[@class='post-name']").InnerText;
             result.Contents = fullPostNode.SelectSingleNode(".//div[@class='mine']").InnerText;
 
+            var tagsNode = fullPostNode.SelectSingleNode("div[@class='post-tags']");
+
+            var tagLinks = tagsNode.SelectNodes(".//a[@rel='tag']");
+
+            foreach(var tagLink in tagLinks)
+            {
+                result.Tags.Add(tagLink.InnerText);
+            }
+
+            var mainCommentsNode = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'blog-feedback-list')]");
+
+            Console.WriteLine(mainCommentsNode.InnerHtml);
+
             return result;
         }
 
