@@ -35,6 +35,9 @@
     <Reference Include="HtmlAgilityPack">
       <HintPath>packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages\Newtonsoft.Json.6.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -49,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Comment.cs" />
     <Compile Include="Post.cs" />
+    <Compile Include="PostHtmlFileInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
