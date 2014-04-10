@@ -51,6 +51,9 @@ namespace MSDNBlogParser
                        };
 
             post.ParseHtmlDocument();
+
+            Console.WriteLine("Processed: " + post.MainHtmlFilePath);
+
             return post;
         }
 
