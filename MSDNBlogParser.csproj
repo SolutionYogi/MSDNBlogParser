@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlogExporter.cs" />
     <Compile Include="Comment.cs" />
     <Compile Include="Post.cs" />
     <Compile Include="PostHtmlFileInfo.cs" />

@@ -4,19 +4,19 @@ namespace MSDNBlogParser
 {
     public class PostHtmlFileInfo
     {
+        private readonly List<string> _postFilePaths = new List<string>();
+
         public string PostUrl { get; private set; }
 
-        public List<string> PostFilePaths { get; set; }
-
-        public PostHtmlFileInfo()
+        public IEnumerable<string> PostFilePaths
         {
-            PostFilePaths = new List<string>();
+            get { return _postFilePaths; }
         }
 
         public PostHtmlFileInfo(string postUrl, IEnumerable<string> filePaths)
         {
             PostUrl = postUrl;
-            PostFilePaths.AddRange(filePaths);
+            _postFilePaths.AddRange(filePaths);
         }
     }
 }
