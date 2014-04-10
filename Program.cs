@@ -13,6 +13,8 @@ namespace MSDNBlogParser
 
         private const string Username = "ericlippert";
 
+        private const string FolderPath = @"c:\Temp\Blog";
+
         private static void Main(string[] args)
         {
             var mainBlogUrl = string.Format("{0}/b/{1}", MsdnBlogRootUrl, Username);
@@ -31,7 +33,33 @@ namespace MSDNBlogParser
                 Console.WriteLine(postLink);
             }
 
+            var post = GetPost("http://blogs.msdn.com/b/ericlippert/archive/2012/11/29/a-new-fabulous-adventure.aspx");
+
+            Console.WriteLine(post.Title);
+            Console.WriteLine(post.Date);
+            Console.WriteLine(post.Comments.Count);
+
             Console.ReadLine();
+        }
+
+        private static IEnumerable<string> GetPostPages(string postUrl)
+        {
+            var mainPostFilePath = GetHtmlPage(postUrl);
+
+            yield return mainPostFilePath;
+            
+            var document = GetHtmlDocument(postUrl);
+
+            var otherPages = document.DocumentNode.SelectNodes("//div[@class='pager']//a");
+
+            if(otherPages == null)
+                yield break;
+
+            foreach(var otherPageLink in otherPages.Skip(1))
+            {
+                var otherPageUrl = string.Format("{0}{1}", MsdnBlogRootUrl, otherPageLink.Attributes["href"].Value);
+                yield return GetHtmlPage(otherPageUrl);
+            }
         }
 
         private static IEnumerable<string> GetPostLinks(string archivePageLink)
@@ -62,8 +90,8 @@ namespace MSDNBlogParser
 
         protected static Post GetPost(string url)
         {
-            var filePath = GetHtmlPage(url);
-            var post = Post.Create(filePath, Enumerable.Empty<string>());
+            var files = GetPostPages(url);
+            var post = Post.Create(files);
             return post;
         }
 
