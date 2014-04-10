@@ -41,9 +41,6 @@ namespace MSDNBlogParser
             {
                 ProcessPost(postHtmlFileInfo);
             }
-            
-            //Parallel.ForEach(items, ProcessPost);
-            Console.ReadLine();
         }
 
         protected static void DownloadPostDetails()

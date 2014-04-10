@@ -52,7 +52,7 @@ namespace MSDNBlogParser
 
             post.ParseHtmlDocument();
 
-            Console.WriteLine("Processed: " + post.MainHtmlFilePath);
+            Console.WriteLine("Processed: {0}", post.MainHtmlFilePath);
 
             return post;
         }
