@@ -20,6 +20,8 @@ namespace MSDNBlogParser
 
         private readonly BlockingCollection<PostHtmlFileInfo> _postInfoList = new BlockingCollection<PostHtmlFileInfo>();
 
+        private CancellationToken _token;
+
         private BlogExporter()
         {
         }
@@ -59,6 +61,7 @@ namespace MSDNBlogParser
 
         public void ExportWordpressXml(CancellationToken token)
         {
+            _token = token;
             Task.Factory.StartNew(DownloadPosts, token);
             var processingTask = Task.Factory.StartNew(ProcessPosts, token);
             processingTask.Wait(token);
@@ -78,25 +81,39 @@ namespace MSDNBlogParser
 
             var archivePageLinks = mainPageDocument.DocumentNode.SelectNodes("//a[contains(@class,'view-post-archive-list')]");
 
-            Parallel.ForEach(archivePageLinks, ProcessArchivePage);
+            Parallel.ForEach(archivePageLinks, ParallelOptions, ProcessArchivePage);
 
             _postInfoList.CompleteAdding();
+        }
+
+        private ParallelOptions ParallelOptions
+        {
+            get
+            {
+                return new ParallelOptions
+                       {
+                           CancellationToken = _token,
+                           MaxDegreeOfParallelism = Environment.ProcessorCount / 2
+                       };
+            }
         }
 
         private void ProcessArchivePage(HtmlNode linkNode)
         {
             var archiveLink = string.Format("{0}{1}", MsdnBlogRootUrl, linkNode.Attributes["href"].Value);
             var postUrls = GetPostLinksFromArchivePage(archiveLink);
-            Parallel.ForEach(postUrls, ProcessPostUrls);
+            Parallel.ForEach(postUrls, ParallelOptions, ProcessPostUrls);
         }
 
         private void ProcessPostUrls(string postUrl)
         {
             _postInfoList.Add(GetPostHtmlFileInfo(postUrl));
+            Console.WriteLine("Added: {0}", postUrl);
         }
 
         protected void ProcessPost(PostHtmlFileInfo info)
         {
+            Console.WriteLine("Processing: {0}", info.PostUrl);
             Post.Create(info.PostFilePaths);
             Console.WriteLine("Processed: {0}", info.PostUrl);
         }
