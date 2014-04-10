@@ -103,7 +103,12 @@ namespace MSDNBlogParser
         {
             var mainCommentsNode = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'blog-feedback-list')]");
             var unorderedListNode = mainCommentsNode.SelectSingleNode(".//ul[@class='content-list']");
+            
+            if(unorderedListNode == null)
+                return Enumerable.Empty<Comment>();
+
             var listItemNodes = unorderedListNode.SelectNodes("li");
+
             return listItemNodes.Select(listItemNode => new Comment
                                                         {
                                                             Author =
@@ -118,6 +123,9 @@ namespace MSDNBlogParser
         {
             var tagsNode = MainPostNode.SelectSingleNode("div[@class='post-tags']");
 
+            if(tagsNode == null)
+                return;
+
             var tagLinks = tagsNode.SelectNodes(".//a[@rel='tag']");
 
             foreach(var tagLink in tagLinks)
@@ -128,7 +136,7 @@ namespace MSDNBlogParser
 
         private void ParseContents()
         {
-            Contents = MainPostNode.SelectSingleNode(".//div[@class='mine']").InnerText;
+            Contents = MainPostNode.SelectSingleNode(".//div[contains(@class, 'post-content')]").InnerText;
         }
 
         private void ParseTitle()
