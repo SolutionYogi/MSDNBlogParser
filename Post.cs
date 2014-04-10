@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
 using NLog;
@@ -35,21 +34,20 @@ namespace MSDNBlogParser
             Comments = new List<Comment>();
         }
 
-        public static Post Create(string mainHtmlFilePath, IEnumerable<string> commentHtmlFilePathList)
+        public static Post Create(IEnumerable<string> htmlFilePaths)
         {
-            if(string.IsNullOrWhiteSpace(mainHtmlFilePath))
-                throw new ArgumentNullException("mainHtmlFilePath");
+            if(htmlFilePaths == null)
+                throw new ArgumentNullException("htmlFilePaths");
 
-            if(commentHtmlFilePathList == null)
-                throw new ArgumentNullException("commentHtmlFilePathList");
+            var list = htmlFilePaths.ToList();
 
-            if(! File.Exists(mainHtmlFilePath))
-                throw new InvalidOperationException(string.Format("File specified by path {0} doesn't exist.", mainHtmlFilePath));
+            if(list.Count == 0)
+                throw new InvalidOperationException("There must be at least one html page for the post.");
 
             var post = new Post
                        {
-                           MainHtmlFilePath = mainHtmlFilePath,
-                           CommentHtmlFilePathList = commentHtmlFilePathList
+                           MainHtmlFilePath = list.First(),
+                           CommentHtmlFilePathList = list.Skip(1)
                        };
 
             post.ParseHtmlDocument();
