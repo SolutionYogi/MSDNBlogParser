@@ -71,7 +71,7 @@ namespace MSDNBlogParser
         {
             foreach(var postInfo in _postInfoList.GetConsumingEnumerable())
             {
-                Task.Factory.StartNew(() => ProcessPost(postInfo));
+                Task.Factory.StartNew(() => ProcessPost(postInfo), _token);
             }
         }
 
