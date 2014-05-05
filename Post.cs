@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
-using NLog;
 
 namespace MSDNBlogParser
 {
     public class Post
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         public DateTime Date { get; set; }
 
         public string Contents { get; set; }
